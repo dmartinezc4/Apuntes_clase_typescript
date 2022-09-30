@@ -1,0 +1,62 @@
+type Persona={
+    name:string;
+    age:number;
+    couple:boolean;
+    coupleName:string;
+}
+
+const persona1:Partial<Persona>={
+    name:"Alberto",
+    age:35,
+    couple:true,
+    coupleName:"Maria"
+}
+
+console.log(persona1);
+
+persona1.couple= false;
+delete persona1.coupleName;
+
+console.log(persona1);
+
+//Formas de acceder
+
+persona1.name="Pedro"
+persona1["age"]=22;
+
+Object.keys(persona1).forEach(key => console.log(persona1[key as keyof typeof persona1]));
+
+console.log(Object.values(persona1))
+
+
+
+//Ejercicio transformar persona 1
+
+const entries=Object.entries(persona1);
+
+console.log(entries);
+
+//^ Hacen lo mismo lo de abajo que lo de arriba
+
+const diseccion:Array<any> =Object.keys(persona1).reduce((acc: Array<any>,key)=>{
+    acc.push(
+        {
+            key:key,
+            value:persona1[key as keyof typeof persona1]
+        }
+    )
+    return acc;
+},[])
+
+console.log(diseccion);
+
+const repersona1=diseccion.reduce((acc,elem)=>{
+    return{
+        ...acc,
+        [elem.key]:elem.value,
+    }
+}
+,{})
+
+console.log(repersona1);
+
