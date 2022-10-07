@@ -1,0 +1,85 @@
+type Info ={
+  count: number,
+  pages: number,
+  next: string | null,
+  prev: string |null,
+}
+
+enum STATUS{
+  ALIVE ="Alive",
+  DEAD ="Dead",
+  UNKNOWN ="Unknown",
+}
+
+type Planet={
+  name:string,
+  url:string,
+}
+
+enum Gender{
+  FEMALE='Female', 
+  MALE= 'Male',
+  GENDERLESS= 'Genderless',
+  UNKNOWN= 'unknown',
+}
+
+
+
+type Character={
+  id: number,
+  name: string,
+  status: STATUS,
+  species: string,
+  type: string,
+  gender: Gender,
+  origin: Planet,
+  location: Planet,
+  image: string,
+  episode: string[],
+  url: string,
+  created: string,
+}
+
+type CharacterData={
+  info:Info,
+  results:Character[],
+}
+
+
+
+const jsonResponse= await fetch("https://rickandmortyapi.com/api/character/"); //Haz un fetch y espera
+
+
+const jsonData:CharacterData= await jsonResponse.json();
+
+const ricks= jsonData.results.filter((elem)=>elem.name.includes("Rick")).map((elem)=>{
+  return{
+    name:elem.name,
+    status:elem.status,
+  };
+});
+
+let next=jsonData.info.next;
+
+while(next){
+  const jsonResponse= await fetch(next); //Haz un fetch y espera
+
+
+  const jsonData:CharacterData= await jsonResponse.json();
+
+  const loopricks= jsonData.results.filter((elem)=>elem.name.includes("Rick")).map((elem)=>{
+    return{
+      name:elem.name,
+      status:elem.status,
+    };
+  });
+  ricks.push(...loopricks);
+
+  next=jsonData.info.next;
+
+}
+
+console.log(ricks);
+
+
+debugger;
