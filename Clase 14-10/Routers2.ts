@@ -6,17 +6,18 @@ const app = new Application();
 const router = new Router();
 
 
-const getCharacters =async(page:number):Promise<any>=>{
+const getCharacters =async(page)=>{
   const data = await fetch(`https://rickandmortyapi.com/api/character/?page=${page}`,
   );
-  return await data.json()
+  const json= await data.json()
+  return json;
 }
 
 
 router.get("/hora",(ctx)=>{
   ctx.response.body = new Date().getTime().toString();
 })
-.get("/characters/page",async (ctx)=>{//Es asíncrona porque esto es pedirle datos a la api de rick y morty
+.get("/characters/:page",async (ctx)=>{//Es asíncrona porque esto es pedirle datos a la api de rick y morty
   let page = Number(ctx.params?.page);
 
   if(page>42){
@@ -24,7 +25,8 @@ router.get("/hora",(ctx)=>{
     ctx.response.status=500;
     return;
   }if(page<1){
-    const jsonresponse=await getCharacters(1);
+    page=1;
+    const jsonresponse=await getCharacters(page);
     ctx.response.body=jsonresponse;
     ctx.response.status=200;
     ctx.response.type= "application/json";
@@ -58,4 +60,3 @@ router.get("/hora",(ctx)=>{
 app.use(router.routes())
 
 await app.listen({ port: 8000 });
-
